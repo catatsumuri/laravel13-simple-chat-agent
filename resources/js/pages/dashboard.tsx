@@ -1,9 +1,10 @@
-import { Head } from '@inertiajs/react';
-import { Play } from 'lucide-react';
+import { Head, Link } from '@inertiajs/react';
+import { Paperclip, Pencil, Play } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { dashboard } from '@/routes';
+import { chat, edit } from '@/routes/scenarios';
 
 type Scenario = {
     id: number;
@@ -14,6 +15,14 @@ type Scenario = {
     difficulty: string;
     summary: string;
     goal: string;
+    attachments: Attachment[];
+};
+
+type Attachment = {
+    id: number;
+    name: string;
+    mime_type: string;
+    size: number;
 };
 
 type DashboardProps = {
@@ -95,10 +104,45 @@ export default function Dashboard({ scenarios }: DashboardProps) {
                                         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Goal</p>
                                         <p className="text-sm leading-6 text-foreground/90">{scenario.goal}</p>
                                     </div>
-                                    <Button type="button" className="w-full">
-                                        <Play />
-                                        シナリオを開始
-                                    </Button>
+                                    <div className="space-y-2">
+                                        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                                            <Paperclip className="h-3.5 w-3.5" />
+                                            Attachments
+                                        </div>
+                                        {scenario.attachments.length === 0 ? (
+                                            <p className="text-sm text-muted-foreground">添付ファイルはまだありません。</p>
+                                        ) : (
+                                            <ul className="space-y-1.5">
+                                                {scenario.attachments.slice(0, 3).map((attachment) => (
+                                                    <li
+                                                        key={attachment.id}
+                                                        className="truncate text-sm text-foreground/90"
+                                                        title={attachment.name}
+                                                    >
+                                                        {attachment.name}
+                                                    </li>
+                                                ))}
+                                                {scenario.attachments.length > 3 && (
+                                                    <li className="text-sm text-muted-foreground">
+                                                        他 {scenario.attachments.length - 3} 件
+                                                    </li>
+                                                )}
+                                            </ul>
+                                        )}
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <Link href={chat(scenario.id)} className="flex-1">
+                                            <Button type="button" className="w-full">
+                                                <Play />
+                                                シナリオを開始
+                                            </Button>
+                                        </Link>
+                                        <Link href={edit(scenario.id)}>
+                                            <Button type="button" variant="outline" size="icon">
+                                                <Pencil className="h-4 w-4" />
+                                            </Button>
+                                        </Link>
+                                    </div>
                                 </CardContent>
                             </Card>
                         ))}

@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Scenario extends Model
 {
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    use HasFactory;
+
     protected $fillable = [
         'title',
         'company_name',
@@ -21,4 +20,10 @@ class Scenario extends Model
         'summary',
         'goal',
     ];
+
+    /** @return HasMany<ScenarioAttachment, $this> */
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(ScenarioAttachment::class);
+    }
 }
